@@ -1,7 +1,8 @@
 from flask import Flask, request
 import logging
 from logging import FileHandler, Formatter
-from Exceptions import BaseExceptionSchema, InvalidAnswerException, QuizNotFoundException
+from Exceptions import BaseExceptionSchema, InvalidResponsesException, QuizNotFoundException
+from validator import Validator
 from pymongo import MongoClient
 import populate
 # Connect to database and start a Flask app
@@ -14,8 +15,8 @@ app.config.from_object('config')
 # CORS(app, origins="http://localhost:3000", supports_credentials=True)
 
 
-@app.route('/get-quiz')
-def get_quiz(id):
+@app.route('/quiz', methods=['GET', 'POST'])
+def quiz(id):
     """ Gets requested Quiz
 
     :param id: Quiz id
@@ -25,30 +26,44 @@ def get_quiz(id):
     if request.method == 'GET':
         try:
             print(id)
-            quiz = db['quizzes'].find_one({'_id': id})
-            print(quiz)
-            if quiz is None:
+            mquiz = get_quiz(id)
+            print(mquiz)
+            if mquiz is None:
                 app.logger.error('Quiz not found')
-                return BaseExceptionSchema(QuizNotFoundException("Quiz not found")).dump()
+                return BaseExceptionSchema(QuizNotFoundException('Quiz not found')).dump()
         except Exception as e:
             return BaseExceptionSchema().dump(e), 500
-    return None
-
-@app.route('/submit-question')
-def submit_question(id):
-    """ Submits user's answer to a question
-
-    :param id: question's id
-    :return: A 200 success
-    :rtype: str
-    :exception:
-    """
-
-    if request.method == 'POST':
+    elif request.method == 'POST':
         try:
-            return 'Not Implemented'
-        except InvalidAnswerException as e:
-            return BaseExceptionSchema().dump(e), 400
+            id = request.get_json()['id']
+            responses = request.get_json()['responses']
+            quiz = get_quiz_internal(id)
+            if quiz is None:
+                app.logger.error('Quiz not found on submission')
+                return BaseExceptionSchema(QuizNotFoundException('Quiz not found on submission')).dump(), 400
+            validator = Validator(quiz, responses)
+            if validator.validate():
+                insert_quiz_response(id, responses, validator.get_result)
+                return validator.get_result, 200
+            else:
+                return BaseExceptionSchema(InvalidResponsesException('Quiz responses are invalid')).dump(), 400
+        except Exception as e:
+            return BaseExceptionSchema().dump(e), 500
+
+def get_quiz(id):
+    return db['quizzes'].find_one({'_id': id}, {'answers': 0})
+
+def get_quiz_internal(id):
+    return db['quizzes'].find_one({'_id': id})
+
+def insert_quiz_response(id, responses, result):
+    quiz_response = {
+        'quiz_id': id,
+        'responses': responses,
+        'result': result
+    }
+
+    db['quiz_response'].insert_one(quiz_response)
 
 
 if not app.debug:

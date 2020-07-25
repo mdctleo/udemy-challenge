@@ -5,7 +5,7 @@ class BaseExceptionSchema(Schema):
     msg = fields.Str()
 
 
-class InvalidAnswerException(Exception):
+class InvalidResponsesException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
         self.msg = msg

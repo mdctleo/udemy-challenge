@@ -19,12 +19,16 @@ def populate_db(db):
         'questions': [
             {
              'question': 'How are you doing?',
-             'options': ['Good', 'Ok', 'Bad']
+             'options': {'0': 'Good', '1': 'Ok', '2': 'Bad'},
+             'answers': {'0': 10, '1': 5, '2': 2},
+             'points': 10
             },
 
             {
                 'question': 'What is 1 + 1? ',
-                'options': ['-1', '2', '10', '4', '5']
+                'options': {'0': '-1', '1': '2', '2': '10', '3': '4', '4': '5'},
+                'answers': {'1': 5, '2': 10},
+                'points': 10
             },
 
             {
@@ -33,15 +37,19 @@ def populate_db(db):
                             'The trolley is headed straight for them. You are standing some distance off in the train yard, '
                             'next to a lever. If you pull this lever, the trolley will switch to a different set of tracks. '
                             'However, you notice that there is one person on the side track. Pick the most ethical option:',
-                'options': ['Do nothing and allow the trolley to kill the five people on the main track',
-                            'Pull the lever, diverting the trolley onto the side track where it will kill one person'
-                            ]
+                'options': {'0': 'Do nothing and allow the trolley to kill the five people on the main track',
+                            '1': 'Pull the lever, diverting the trolley onto the side track where it will kill one person'
+                            },
+                'answers': {'0': 10, '1': 10},
+                'points': 10
 
             },
 
             {
              'question': 'Should you hire me?',
-             'options': ['Yes']
+             'options': {'0': 'Yes'},
+             'answers': {'0': 70},
+             'points': 70
             }
         ]
     }
@@ -63,4 +71,4 @@ def auto_increment(db, seq_name):
         return_document=ReturnDocument.AFTER
     )
 
-    return seq_document['seq']
+    return str(seq_document['seq'])
