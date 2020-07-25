@@ -1,0 +1,5 @@
+.idea/
+.DS_STORE
+udemy.iml
+src/error.log
+src/__pycache__/*
