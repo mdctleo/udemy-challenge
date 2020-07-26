@@ -5,3 +5,4 @@ src/error.log
 src/__pycache__/*
 test/__pycache__/*
 error.log
+frontend/node_modules
