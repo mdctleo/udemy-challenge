@@ -1,6 +1,9 @@
 from flask import Flask, request, jsonify
 import logging
 from logging import FileHandler, Formatter
+
+from flask_cors import CORS
+
 from src.Exceptions import BaseExceptionSchema, InvalidResponsesException, QuizNotFoundException
 from src.validator import Validator
 from pymongo import MongoClient
@@ -13,7 +16,7 @@ populate.restore_default_db(db)
 app = Flask(__name__)
 app.config.from_object(config)
 # TODO: remove cors
-# CORS(app, origins="http://localhost:3000", supports_credentials=True)
+CORS(app, origins="http://localhost:3000", supports_credentials=True)
 
 
 @app.route('/quiz', methods=['GET', 'POST'])
@@ -26,7 +29,7 @@ def quiz():
     """
     if request.method == 'GET':
         try:
-            id = request.args.get('id')
+            id = request.args.get('_id')
             mquiz = get_quiz(id)
             if mquiz is None:
                 app.logger.error('Quiz not found')

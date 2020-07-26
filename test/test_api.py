@@ -25,7 +25,7 @@ def test_get_quiz(setup):
     Getting a quiz should return a quiz with the answers hidden
     """
     with app.test_client() as c:
-        response = c.get('/quiz?id=1')
+        response = c.get('/quiz?_id=1')
         response_json = response.get_json()
         assert response_json['_id'] == '1'
         assert response_json['title'] == 'Quiz 1'
@@ -38,7 +38,7 @@ def test_get_non_existent_quiz(setup):
     Getting a non-existent quiz should return 400 and QuizNotFoundException
     """
     with app.test_client() as c:
-        response = c.get('/quiz?id=2')
+        response = c.get('/quiz?_id=2')
         response_json = response.get_json()
         assert response.status_code == 400
         assert response_json == BaseExceptionSchema().dump(QuizNotFoundException())

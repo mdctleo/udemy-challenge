@@ -3,28 +3,25 @@ import PropTypes from 'prop-types'
 import {Radio, Row} from "antd";
 import "../App.css"
 
-const Options = ({options}) => {
+const Options = ({options, step, addResponse}) => {
     return (
         <Radio.Group className="radio-group">
-            {/*{*/}
-            {/*Object.entries(options).map((key, value) => {*/}
-            {/*return <Radio value={key}>{key}: {value}</Radio>*/}
-            {/*})*/}
-            {/*}*/}
-            <Row>
-                <Radio value="a">item 1</Radio>
-            </Row>
-            <Row>
-                <Radio value="b">item 2</Radio>
-            </Row>
-            <Row>
-                <Radio value="c">item 3</Radio>
-            </Row>
+            {
+                Object.entries(options).map(([key, value]) => {
+                    return (
+                        <Row key={key}>
+                            <Radio value={key} onChange={() => addResponse(step, key)}>{key}: {value}</Radio>
+                        </Row>
+                    )
+                })
+            }
         </Radio.Group>
     )
 }
 
 Options.propTypes = {
-    options: PropTypes.object
+    options: PropTypes.object,
+    step: PropTypes.number,
+    addResponse: PropTypes.func
 }
 export default Options

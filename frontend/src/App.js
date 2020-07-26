@@ -1,22 +1,36 @@
-import React from 'react';
-import logo from './logo.svg';
-import {Counter} from './features/counter/Counter';
+import React, { useEffect } from 'react';
 import 'antd/dist/antd.css'; // or 'antd/dist/antd.less'
 import './App.css';
 import Quiz from './quiz'
-import Question from './question'
-import Options from './options'
-import Controls from './controls'
 
-function App() {
+import Controls from './controls'
+import {getQuiz} from './action'
+import {connect} from "react-redux";
+import QuestionContainer from "./question-container";
+import {selectTitle} from "./selector";
+
+const App = ({title, getQuiz}) => {
+    useEffect(() => {
+        getQuiz(1)
+    }, [])
     return (
         <div className="App">
             <Quiz/>
-            <Question/>
-            <Options/>
+            <QuestionContainer/>
             <Controls />
         </div>
     );
 }
 
-export default App;
+const mapStateToProps = state => {
+    return {
+        title: selectTitle(state)
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        getQuiz: _id => dispatch(getQuiz(_id))
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(App);
