@@ -1,33 +1,24 @@
+from flask import jsonify
 from pymongo import ReturnDocument
 
-def populate_db(db):
-    """
-    A function to refresh the database on start of the app for testing
-    :param db: MongoDB client
-    """
-    quizzes = db['quizzes']
-    # Counters collection holds one document that is used to create an auto increment id for quizzes
-    counters = db['counters']
-    quizzes.delete_many({})
-    counters.delete_many({})
 
-    counters.insert_one({'_id': 'quiz_id', 'seq': 0})
 
-    quiz = {
+def create_quiz1(db):
+    return {
         '_id': auto_increment(db, 'quiz_id'),
         'title': 'Quiz 1',
         'questions': [
             {
-             'question': 'How are you doing?',
-             'options': {'0': 'Good', '1': 'Ok', '2': 'Bad'},
-             'answers': {'0': 10, '1': 5, '2': 2},
-             'points': 10
+                'question': 'How are you doing?',
+                'options': {'A': 'Good', 'B': 'Ok', 'C': 'Bad'},
+                'answers': {'A': 10, 'B': 5, 'C': 2},
+                'points': 10
             },
 
             {
                 'question': 'What is 1 + 1? ',
-                'options': {'0': '-1', '1': '2', '2': '10', '3': '4', '4': '5'},
-                'answers': {'1': 5, '2': 10},
+                'options': {'A': '-1', 'B': '2', 'C': '10', 'D': '4', 'E': '5'},
+                'answers': {'B': 5, 'C': 10},
                 'points': 10
             },
 
@@ -37,22 +28,39 @@ def populate_db(db):
                             'The trolley is headed straight for them. You are standing some distance off in the train yard, '
                             'next to a lever. If you pull this lever, the trolley will switch to a different set of tracks. '
                             'However, you notice that there is one person on the side track. Pick the most ethical option:',
-                'options': {'0': 'Do nothing and allow the trolley to kill the five people on the main track',
-                            '1': 'Pull the lever, diverting the trolley onto the side track where it will kill one person'
+                'options': {'A': 'Do nothing and allow the trolley to kill the five people on the main track',
+                            'B': 'Pull the lever, diverting the trolley onto the side track where it will kill one person'
                             },
-                'answers': {'0': 10, '1': 10},
+                'answers': {'A': 10, 'B': 10},
                 'points': 10
 
             },
 
             {
-             'question': 'Should you hire me?',
-             'options': {'0': 'Yes'},
-             'answers': {'0': 70},
-             'points': 70
+                'question': 'Should you hire me?',
+                'options': {'A': 'Yes'},
+                'answers': {'A': 70},
+                'points': 70
             }
         ]
     }
+
+def restore_default_db(db):
+    """
+    A function to refresh the database on start of the app for testing
+    :param db: MongoDB client
+    """
+    quizzes = db['quizzes']
+    # Counters collection holds one document that is used to create an auto increment id for quizzes
+    counters = db['counters']
+    responses = db['responses']
+    quizzes.drop()
+    counters.drop()
+    responses.drop()
+
+    counters.insert_one({'_id': 'quiz_id', 'seq': 0})
+
+    quiz = create_quiz1(db)
 
     quizzes.insert_one(quiz)
 

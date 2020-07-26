@@ -6,11 +6,13 @@ class BaseExceptionSchema(Schema):
 
 
 class InvalidResponsesException(Exception):
-    def __init__(self, msg):
+    def __init__(self):
+        msg = 'Invalid Quiz Responses'
         super().__init__(msg)
         self.msg = msg
 
 class QuizNotFoundException(Exception):
-    def __init__(self, msg):
+    def __init__(self):
+        msg = 'Quiz Not Found'
         super().__init__(msg)
         self.msg = msg
