@@ -1,4 +1,12 @@
 class Validator(object):
+    """ Validates and marks submitted responses for a quiz
+    :param quiz: A quiz document with answers
+    :type quiz: dict
+    :param responses: An array of string responses for the quiz
+    :type responses: list
+    :var result: The numeric result attained for the given responses on the given quiz
+    :type result: int
+    """
     def __init__(self, quiz, responses):
         self.__quiz = quiz
         self.__responses = responses
@@ -6,6 +14,12 @@ class Validator(object):
 
 
     def validate(self):
+        """ Validates each response by seeing if they exist in the answer dict in each question
+        In addition, sum up the score if it exists in the answer dict
+
+        :return: True if validated
+        :rtype: bool
+        """
         questions = self.__quiz['questions']
         responses = self.__responses
 
@@ -26,6 +40,11 @@ class Validator(object):
 
     @property
     def get_result(self):
+        """ Returns the result of the quiz
+
+        :return: result of the quiz
+        :rtype: int
+        """
         return self.__result
 
 

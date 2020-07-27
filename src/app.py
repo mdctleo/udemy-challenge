@@ -4,19 +4,22 @@ from logging import FileHandler, Formatter
 
 from flask_cors import CORS
 
-from src.Exceptions import BaseExceptionSchema, InvalidResponsesException, QuizNotFoundException
+from src.exceptions import BaseExceptionSchema, InvalidResponsesException, QuizNotFoundException
 from src.validator import Validator
 from pymongo import MongoClient
-from test import populate
+from src.database import Database
 from src import config
+
 # Connect to database and start a Flask app
 client = MongoClient()
-db = client['quiz_database']
-populate.restore_default_db(db)
+db = Database(client['quiz_database'])
+db.restore_default_db()
+
 app = Flask(__name__)
 app.config.from_object(config)
+
 # TODO: remove cors
-CORS(app, origins="http://localhost:3000", supports_credentials=True)
+# CORS(app, origins="http://localhost:3000", supports_credentials=True)
 
 
 @app.route('/quiz', methods=['GET', 'POST'])
@@ -26,48 +29,51 @@ def quiz():
     :param id: Quiz id
     :return: A json representation of a Quiz class
     :rtype: str
+    :exception QuizNotFoundException: Thrown when getting a quiz that does not exist in the database
     """
     if request.method == 'GET':
         try:
             id = request.args.get('_id')
-            mquiz = get_quiz(id)
+            mquiz = db.get_quiz(id)
             if mquiz is None:
-                app.logger.error('Quiz not found')
-                return BaseExceptionSchema().dump(QuizNotFoundException()), 400
+                e = QuizNotFoundException()
+                app.logger.error(str(e))
+                return BaseExceptionSchema().dump(e), 400
             return jsonify(mquiz), 200
         except Exception as e:
+            app.logger.error(str(e))
             return BaseExceptionSchema().dump(e), 500
     elif request.method == 'POST':
+        """ Posts requested quiz
+        :param _id: Quiz id
+        :type _id: str
+        :param responses: An array of string representing user choices
+        :type responses: List
+        :return result: Score user achieved on the quiz
+        :rtype result: str
+        :exception QuizNotFoundException: Thrown when submitting responses for a quiz that does not exist
+        :exception InvalidResponsesException: Thrown when responses have invalid structures or at least one response
+        does not exist in the options
+        """
         try:
             id = request.get_json()['_id']
             responses = request.get_json()['responses']
-            quiz = get_quiz_internal(id)
+            quiz = db.get_quiz_internal(id)
             if quiz is None:
-                app.logger.error('Quiz not found on submission')
-                return BaseExceptionSchema().dump(QuizNotFoundException()), 400
+                e = QuizNotFoundException()
+                app.logger.error(str(e))
+                return BaseExceptionSchema().dump(e), 400
             validator = Validator(quiz, responses)
             if validator.validate():
-                insert_quiz_response(id, responses, validator.get_result)
+                db.insert_quiz_response(id, responses, validator.get_result)
                 return jsonify(validator.get_result), 200
             else:
-                return BaseExceptionSchema().dump(InvalidResponsesException()), 400
+                e = InvalidResponsesException()
+                app.logger.error(str(e))
+                return BaseExceptionSchema().dump(e), 400
         except Exception as e:
+            app.logger.error(str(e))
             return BaseExceptionSchema().dump(e), 500
-
-def get_quiz(id):
-    return db['quizzes'].find_one({'_id': id}, {'questions.answers': False})
-
-def get_quiz_internal(id):
-    return db['quizzes'].find_one({'_id': id})
-
-def insert_quiz_response(id, responses, result):
-    quiz_response = {
-        'quiz_id': id,
-        'responses': responses,
-        'result': result
-    }
-
-    db['responses'].insert_one(quiz_response)
 
 
 if not app.debug:
