@@ -68,6 +68,7 @@ Improvements:
 * Automating deployment process
 * With better containerization and knowledge of Kubernetes, the application can be deployed to Kubernetes
 so the front end, back end and database can scale independently
+* SSL certificate (which does not work with amazon's url and needs a custom domain I believe) and custom domain (this costs money and I am unemployed)
 
 ## Testing
 I used Pytest and my eyes to test the program right now.
