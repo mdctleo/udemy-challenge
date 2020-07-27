@@ -7,6 +7,18 @@ import {nextStep, prevStep, submitQuiz} from "../action";
 import {connect} from "react-redux";
 
 
+/***
+ *  Next, previous and submit button. This component controls the flow of the application
+ * @param step: the index of the current question
+ * @param questionsLength: Total number of questions in the quiz
+ * @param _id: id of the quiz
+ * @param responses: holds responses of the quiz so far
+ * @param nextStep: go to next question
+ * @param prevStep: go to previous question
+ * @param submitQuiz: submit quiz if validated
+ * @return {*}
+ * @constructor
+ */
 const Controls = ({step, questionsLength, _id, responses, nextStep, prevStep, submitQuiz}) => {
     return (
         <Row className="controls">

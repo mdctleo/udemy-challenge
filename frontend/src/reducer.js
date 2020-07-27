@@ -14,7 +14,8 @@ export const initialState = {
 const quizReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_QUIZ_DATA:
-            let responses = action.questions.map(() =>{
+            // initialize responses to the same size as questions in the quiz
+            let responses = action.questions.map(() => {
                 return undefined
             })
             return {
@@ -33,6 +34,7 @@ const quizReducer = (state = initialState, action) => {
                 error: {...state.error}
             }
         case ADD_RESPONSE:
+            // update the response array from user input
             let r = [...state.responses]
             r[action.step] = action.key
             return {

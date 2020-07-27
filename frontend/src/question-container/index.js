@@ -13,6 +13,18 @@ import Options from "../options";
 import {connect} from "react-redux";
 import {addResponse} from "../action";
 
+/***
+ * Container for question and options
+ * @param questionText: the question statement
+ * @param options: choices
+ * @param points: numeric worth of the current question
+ * @param step: the index of the current question
+ * @param questionsLength: total number of questions in the quiz
+ * @param response: recorded response for this question, initially undefined
+ * @param addResponse: a function that records user's selection to redux
+ * @return {*}
+ * @constructor
+ */
 const QuestionContainer = ({questionText, options, points, step, questionsLength, response, addResponse}) => {
     return (
         <div>

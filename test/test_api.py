@@ -4,9 +4,9 @@ Tests for API endpoints
 import pytest
 from pymongo import MongoClient
 
-from src.Exceptions import BaseExceptionSchema, QuizNotFoundException, InvalidResponsesException
+from src.exceptions import BaseExceptionSchema, QuizNotFoundException, InvalidResponsesException
 from src.app import app
-from test import populate
+from src.database import Database
 
 @pytest.fixture
 def setup():
@@ -14,10 +14,10 @@ def setup():
     Restore database to default before each test cases
     """
     client = MongoClient()
-    db = client['quiz_database']
-    populate.restore_default_db(db)
+    db = Database(client['quiz_database'])
+    db.restore_default_db()
     yield 'setup'
-    populate.restore_default_db(db)
+    db.restore_default_db()
 
 
 def test_get_quiz(setup):

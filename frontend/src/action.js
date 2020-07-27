@@ -95,6 +95,7 @@ export const getQuiz = (_id) => {
 export const submitQuiz = (_id, responses) => {
     return dispatch => {
         dispatch(setLoading(true))
+        // A simple front end check to see if user has filled out all questions
         let incompleteResponses = []
         responses.forEach((response, index) => {
             if (response === undefined) {

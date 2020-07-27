@@ -2,6 +2,16 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Col, Row, Divider} from 'antd'
 
+/***
+ * Question Header
+ * @param questionText: the question statement
+ * @param step: the index of the current question
+ * @param questionsLength: total number of questions in the quiz
+ * @param points: numeric worth of the current question
+ * @return {*}
+ * @constructor
+ */
+
 const Question = ({questionText, step, questionsLength, points}) => {
     return (
         <div>

@@ -3,6 +3,16 @@ import PropTypes from 'prop-types'
 import {Radio, Row} from "antd";
 import "../App.css"
 
+/***
+ * Multiple-choices for the current question
+ * @param options: choices
+ * @param step: the index of the current question
+ * @param addResponse: a function that records user's selection to redux
+ * @param response: recorded response for this question, initially undefined
+ * @return {*}
+ * @constructor
+ */
+
 const Options = ({options, step, addResponse, response}) => {
     return (
         <Radio.Group className="radio-group" value={response} onChange={(e) => addResponse(step, e.target.value)}>

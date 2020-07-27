@@ -11,6 +11,17 @@ import {selectError, selectIsLoading, selectResult, selectTitle} from "./selecto
 import {Alert, Result, Spin, Typography} from 'antd'
 
 const {Title} = Typography
+/***
+ *
+ * @param title: title of the quiz
+ * @param error: indicates if application encountered an error {isError: bool, msg: str}
+ * @param isLoading: indicates if application is loading
+ * @param result: numeric result of the quiz, initially -1 before completion
+ * @param getQuiz: a function that fetches a quiz from the backend
+ * @param setError: sets error status of the application
+ * @return {*}
+ * @constructor
+ */
 
 const App = ({title, error, isLoading, result, getQuiz, setError}) => {
     useEffect(() => {
