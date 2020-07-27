@@ -2,22 +2,22 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {Button, Col, Row} from "antd";
 import '../App.css';
-import {selectQuestionsLength, selectStep} from "../selector";
-import {setStep} from "../action";
+import {selectQuestionsLength, selectQuizId, selectResponses, selectStep} from "../selector";
+import {nextStep, prevStep, submitQuiz} from "../action";
 import {connect} from "react-redux";
 
 
-const Controls = ({step, questionsLength, setStep}) => {
+const Controls = ({step, questionsLength, _id, responses, nextStep, prevStep, submitQuiz}) => {
     return (
         <Row className="controls">
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                <Button onClick={() => setStep(step--, questionsLength)}>Previous</Button>
+                <Button disabled={step === 0} onClick={() => prevStep(step)}>Previous</Button>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                <Button type="primary">Submit</Button>
+                <Button type="primary" onClick={() => submitQuiz(_id, responses)}>Submit</Button>
             </Col>
             <Col xs={24} sm={24} md={8} lg={8} xl={8}>
-                <Button onClick={() => setStep(step++, questionsLength)}>Next</Button>
+                <Button disabled={step === questionsLength - 1} onClick={() => nextStep(step, questionsLength)}>Next</Button>
             </Col>
         </Row>
     )
@@ -26,19 +26,27 @@ const Controls = ({step, questionsLength, setStep}) => {
 Controls.propTypes = {
     step: PropTypes.number,
     questionsLength: PropTypes.number,
-    setStep: PropTypes.func
+    _id: PropTypes.string,
+    responses: PropTypes.array,
+    nextStep: PropTypes.func,
+    prevStep: PropTypes.func,
+    submitQuiz: PropTypes.func
 }
 
 const mapStateToProps = state => {
     return {
         step: selectStep(state),
-        questionsLength: selectQuestionsLength(state)
+        questionsLength: selectQuestionsLength(state),
+        _id: selectQuizId(state),
+        responses: selectResponses(state)
     }
 }
 
 const mapDispatchToProps = dispatch => {
     return {
-        setStep: (step, questionsLength) => dispatch(setStep(step, questionsLength))
+        nextStep: (step, questionsLength) => dispatch(nextStep(step, questionsLength)),
+        prevStep: step => dispatch(prevStep(step)),
+        submitQuiz: (_id, responses) => dispatch(submitQuiz(_id, responses))
     }
 }
 

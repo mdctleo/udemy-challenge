@@ -1,16 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {selectOptions, selectPoints, selectQuestionText, selectStep} from '../selector'
+import {
+    selectOptions,
+    selectPoints,
+    selectQuestionsLength,
+    selectQuestionText,
+    selectResponse,
+    selectStep
+} from '../selector'
 import Question from "../question";
 import Options from "../options";
 import {connect} from "react-redux";
 import {addResponse} from "../action";
 
-const QuestionContainer = ({questionText, options, points, step, addResponse}) => {
+const QuestionContainer = ({questionText, options, points, step, questionsLength, response, addResponse}) => {
     return (
         <div>
-            <Question questionText={questionText}/>
-            <Options options={options} step={step} addResponse={addResponse}/>
+            <Question questionText={questionText} step={step} points={points} questionsLength={questionsLength}/>
+            <Options options={options} step={step} addResponse={addResponse} response={response}/>
         </div>
     )
 
@@ -21,6 +28,8 @@ QuestionContainer.propTypes = {
     options: PropTypes.object,
     points: PropTypes.number,
     step: PropTypes.number,
+    questionsLength: PropTypes.number,
+    response: PropTypes.string,
     addResponse: PropTypes.func
 
 }
@@ -30,7 +39,9 @@ const mapStateToProps = state => {
         questionText: selectQuestionText(state),
         options: selectOptions(state),
         points: selectPoints(state),
-        step: selectStep(state)
+        step: selectStep(state),
+        questionsLength: selectQuestionsLength(state),
+        response: selectResponse(state)
     }
 }
 

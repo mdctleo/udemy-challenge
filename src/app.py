@@ -40,7 +40,6 @@ def quiz():
     elif request.method == 'POST':
         try:
             id = request.get_json()['_id']
-            print(request.get_json())
             responses = request.get_json()['responses']
             quiz = get_quiz_internal(id)
             if quiz is None:
