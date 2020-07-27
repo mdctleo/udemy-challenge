@@ -8,7 +8,7 @@ export const initialState = {
     responses: [],
     error: {isError: false, msg: ""},
     isLoading: false,
-    result: 0
+    result: -1
 }
 
 const quizReducer = (state = initialState, action) => {

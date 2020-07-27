@@ -7,12 +7,12 @@ import Controls from './controls'
 import {getQuiz, setError} from './action'
 import {connect} from "react-redux";
 import QuestionContainer from "./question-container";
-import {selectError, selectIsLoading, selectTitle} from "./selector";
-import {Alert, Spin, Typography} from 'antd'
+import {selectError, selectIsLoading, selectResult, selectTitle} from "./selector";
+import {Alert, Result, Spin, Typography} from 'antd'
 
 const {Title} = Typography
 
-const App = ({title, error, isLoading, getQuiz, setError}) => {
+const App = ({title, error, isLoading, result, getQuiz, setError}) => {
     useEffect(() => {
         getQuiz(1)
     }, [getQuiz])
@@ -27,8 +27,20 @@ const App = ({title, error, isLoading, getQuiz, setError}) => {
                 onClose={() => setError(false, "")}
             />}
             <Spin size='large' spinning={isLoading}>
-                <QuestionContainer/>
-                <Controls/>
+                {result === -1 ?
+                    <div>
+                        <QuestionContainer/>
+                        <Controls/>
+                    </div>
+                    :
+                    <div>
+                        <Result
+                            status="success"
+                            title={"Your score is: " + result}
+                            subTitle="You've completed the quiz!"
+                        />
+                    </div>
+                }
             </Spin>
         </div>
     );
@@ -38,6 +50,7 @@ App.propTypes = {
     title: PropTypes.string,
     error: PropTypes.object,
     isLoading: PropTypes.bool,
+    result: PropTypes.number,
     getQuiz: PropTypes.func,
     setError: PropTypes.func
 }
@@ -46,7 +59,8 @@ const mapStateToProps = state => {
     return {
         title: selectTitle(state),
         error: selectError(state),
-        isLoading: selectIsLoading(state)
+        isLoading: selectIsLoading(state),
+        result: selectResult(state)
     }
 }
 

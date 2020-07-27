@@ -60,6 +60,11 @@ export const selectResponse = createSelector(
     (step, responses) => responses[step]
 )
 
+export const selectResult = createSelector(
+    selectQuiz,
+    quiz => quiz.result
+)
+
 export const selectError = createSelector(
     selectQuiz,
     quiz => quiz.error
