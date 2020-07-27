@@ -1,5 +1,5 @@
 # udemy-challenge
-A simple quiz taking application
+A simple quiz taking application. [Deployed here](http://ec2-50-18-241-45.us-west-1.compute.amazonaws.com/)
 
 ## Introduction
 
